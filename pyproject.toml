@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "powerfoam"
+version = "0.0.0"
+description = "PowerFoam reference implementation packaged for editable installs."
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = { file = "LICENSE" }
+dependencies = [
+    "configargparse>=1.7.1",
+    "einops>=0.8.1",
+    "matplotlib>=3.10.6",
+    "numpy>=2.1.2",
+    "pillow>=11.0.0",
+    "plyfile>=1.1.2",
+    "pycolmap>=3.12.0",
+    "pyyaml>=6.0.2",
+    "scipy>=1.16.2",
+    "tensorboard>=2.20.0",
+    "torch>=2.11.0",
+    "tqdm>=4.67.1",
+    "warp-lang>=1.10.0",
+]
+
+[project.optional-dependencies]
+eval = ["lpips>=0.1.4"]
+mesh = ["open3d>=0.19.0"]
+sampling = ["fpsample>=0.3.3"]
+viewer = [
+    "glfw>=2.7.0",
+    "imgui-bundle>=1.6.0",
+    "PyOpenGL>=3.1.7",
+]
+all = [
+    "fpsample>=0.3.3",
+    "glfw>=2.7.0",
+    "imgui-bundle>=1.6.0",
+    "lpips>=0.1.4",
+    "open3d>=0.19.0",
+    "PyOpenGL>=3.1.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["powerfoam", "configs", "data_loader", "utils"]
+

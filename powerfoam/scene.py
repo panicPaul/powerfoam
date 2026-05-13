@@ -1,6 +1,5 @@
 import threading
 
-import fpsample
 import plyfile
 import numpy as np
 from scipy.spatial import KDTree
@@ -18,13 +17,27 @@ from .color_fn import SphericalVoronoi
 from .scheduling import get_cosine_scheduler
 
 
+def _sample_sfm_indices(cpu_points, sample_points):
+    try:
+        import fpsample
+    except ImportError:
+        if sample_points >= cpu_points.shape[0]:
+            return np.arange(cpu_points.shape[0])
+        return np.random.choice(
+            cpu_points.shape[0],
+            size=sample_points,
+            replace=False,
+        )
+    return fpsample.bucket_fps_kdtree_sampling(cpu_points, sample_points)
+
+
 def init_points_sfm(data_handler, num_points):
     init_points = data_handler.points3D.float()
     cpu_points = init_points.cpu().numpy()
 
     sample_points = min(num_points, int(0.95 * init_points.shape[0]))
     print(f"Sampling {sample_points} points from {init_points.shape[0]} sfm points")
-    point_inds = fpsample.bucket_fps_kdtree_sampling(cpu_points, sample_points)
+    point_inds = _sample_sfm_indices(cpu_points, sample_points)
     point_inds = torch.tensor(point_inds, dtype=torch.long)
 
     if num_points < 0.9 * init_points.shape[0]:

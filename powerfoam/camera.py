@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import torch
 import warp as wp
-import open3d as o3d
+
+if TYPE_CHECKING:
+    import open3d as o3d
 
 
 @wp.struct
@@ -215,6 +220,8 @@ class TorchCamera:
         return ray_maps.view(self.height, self.width, 6)
 
     def to_open3d(self) -> o3d.camera.PinholeCameraParameters:
+        import open3d as o3d
+
         K = self.intrinsics_matrix()
         fx, fy, cx, cy = K[[0, 1, 0, 1], [0, 1, 2, 2]].tolist()
 
